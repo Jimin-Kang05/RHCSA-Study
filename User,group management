@@ -5,3 +5,6 @@ Command Practiced:
 useradd, groupadd, passwd ,usermod
 
 useradd: create new user on the system
+groupadd: create new group on the system
+passwd: set password for user
+usermod: change the settings of user
