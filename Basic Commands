@@ -1,0 +1,9 @@
+#Practice logs for RHCSA
+Topic - Basic Commands
+
+ls: list directory contents
+pwd: print the name of current, working diretory
+whoami: print username
+hostname: print hostname
+cd: change directory
+mv: move file or directory/ change the name of directory or file
