@@ -7,3 +7,9 @@ whoami: print username
 hostname: print hostname
 cd: change directory
 mv: move file or directory/ change the name of directory or file
+touch: create new basic file
+rm: remove file or directory
+mkdir: create new directory
+rmdir: remove directory(command only axecute when directory is empty)
+echo: display input text to standard output
+vi/nano: standard file editor
