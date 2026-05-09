@@ -1,0 +1,13 @@
+#Managing Basic Network
+
+hostname or hostnamectl hostname command line can be use to change our hostname
+
+ex: hostname rhcsa.example.com
+hostname will change root@localhost -> root@rhcsa.example.com
+
+#NetWorkManager and tools
+NetWorkManager is default network management service in RHEl system.
+
+nmcli: Network manager command line interface
+nmtui: Network Manager test user interface
+nm-connection-editor: Graphical user interface
