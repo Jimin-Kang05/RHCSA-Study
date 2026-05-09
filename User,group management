@@ -1,10 +1,8 @@
-#Learning logs for RHCSA
-Topic - User and Group Management
+#**User and Group Management**
 
-Command Practiced:
-useradd, groupadd, passwd ,usermod
+##Main commands
 
-useradd: create new user on the system
-groupadd: create new group on the system
-passwd: set password for user
-usermod: change the settings of user
+* **useradd: create new user on the system
+* **groupadd: create new group on the system
+* **passwd: set password for user
+* **usermod: change the settings of user
