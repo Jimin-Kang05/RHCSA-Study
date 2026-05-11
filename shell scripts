@@ -1,0 +1,7 @@
+#Create simple shell scripting
+
+$0: script name
+$1: first argument of command/file content
+$2:second argument of command/file content
+$#: total number of arguments provided
+$@: list of all arguments provided
