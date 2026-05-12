@@ -5,3 +5,13 @@ $1: first argument of command/file content
 $2:second argument of command/file content
 $#: total number of arguments provided
 $@: list of all arguments provided
+
+In Linux shell scripting, the if statement is a fundamental tool for decision-making
+
+if [ condition ]; then
+    # Commands to run if the condition is True
+else
+    # Commands to run if the condition is False
+fi
+
+Note: You must include spaces inside the brackets [ ]. For example, [ $a -eq $b ] works, but [$a-eq$b] will throw an error.
