@@ -1,0 +1,15 @@
+# Configuring a Local DNF/RPM Repository on RHEL
+
+This guide explains how to configure a local DNF/RPM repository using RHEL installation media. This is essential for environments without internet access or for optimizing package installation speeds.
+
+---
+
+## 🚀 Step-by-Step Instructions
+
+### 1. Create a Mount Point
+Create a directory where the installation media (ISO) will be mounted.
+```bash
+sudo mkdir -p /mnt/disc
+
+# If using a physical drive or virtual CD-ROM
+sudo mount /dev/cdrom /mnt/disc
