@@ -13,3 +13,21 @@ sudo mkdir -p /mnt/disc
 
 # If using a physical drive or virtual CD-ROM
 sudo mount /dev/cdrom /mnt/disc
+
+Create a new .repo file in the /etc/yum.repos.d/ directory
+**Extension of the file must set to .repo, otherwise it will not work.
+sudo vi /etc/yum.repos.d/local.repo
+
+## Add the following configuration on /etc/yum.repos.d/
+
+[local-baseos]
+name=RHEL Local Repository - BaseOS
+baseurl=file:///mnt/disc/BaseOS
+enabled=1
+gpgcheck=0
+
+[local-appstream]
+name=RHEL Local Repository - AppStream
+baseurl=file:///mnt/disc/AppStream
+enabled=1
+gpgcheck=0
