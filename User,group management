@@ -5,4 +5,8 @@
 * **useradd: create new user on the system
 * **groupadd: create new group on the system
 * **passwd: set password for user
-* **usermod: change the settings of user
+* **usermod: modify the settings of user
+* chage: modify password settings
+
+1. User Management
+User account information is stored in /etc/passwd, and encrypted passwords are kept in /etc/shadow
