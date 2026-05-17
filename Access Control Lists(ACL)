@@ -1,0 +1,64 @@
+# Linux Access Control Lists (ACL) Reference Guide
+
+A comprehensive cheat sheet and technical guide for configuring granular file system permissions in Linux using Access Control Lists (ACL).
+
+---
+
+## 1. Introduction to Linux ACL
+
+In standard Linux security, file permissions are bound to the traditional **UGO (User, Group, Others)** ownership model managed via `chmod` and `chown`. While highly efficient, UGO permissions fall short when multiple individual users or distinct groups require different levels of access to the exact same file system object.
+
+**Access Control Lists (ACL)** overcome this barrier by providing a flexible mechanism to inject precise, granular permissions. With ACLs, system administrators can explicitly define permission sets for any arbitrary user or group without changing primary ownership or altering broader system-wide configurations.
+
+---
+
+## 2. Core ACL Types
+
+Linux classifies Access Control Lists into two main operational categories:
+
+* **Access ACLs:** Applied directly to specific files or directories to dictate active permissions for real-time operations on existing objects.
+* **Default ACLs:** Assigned exclusively to *directories*. They do not alter access permissions for the directory itself; instead, they serve as a dynamic template. Any newly created file or sub-directory within that path automatically inherits these predefined permission rules.
+
+---
+
+## 3. Essential Commands & Examples
+
+The primary utilities for interacting with ACLs are `getfacl` (to audit permissions) and `setfacl` (to modify or remove permissions).
+
+| Command Syntax | Action & Technical Description |
+| :--- | :--- |
+| `setfacl -m u:lisa:rwx FILE_PATH` | **Grant User Access:** Adds or overrides an Access ACL entry for the specific user `lisa`, granting full Read (`r`), Write (`w`), and Execute (`x`) permissions on the target file. |
+| `setfacl -x u:lisa FILE_PATH` | **Remove User ACL Entry:** Drops the user-specific ACL rule for `lisa` from the target file. Access reverts back to standard group or 'other' permission scopes. |
+| `setfacl -m d:u:harry:rwx DIR_PATH` | **Configure Default ACL:** Applies an inheritance template to a directory. All future child files and sub-folders created inside `DIR_PATH` will automatically inherit full `rwx` rights for user `harry`. |
+| `setfacl -b FILE_PATH` | **Purge All Extended ACLs:** Strips away all extended user, group, and default ACL mappings, resetting the object purely to standard UGO permissions. |
+| `setfacl -k DIR_PATH` | **Delete Default Template:** Removes the Default ACL layer from a directory, stopping inheritance for future child objects without affecting files that already exist. |
+
+---
+
+## 4. Quick Flag Reference
+
+When constructing `setfacl` commands, understand the core operational flags to prevent structural configuration errors:
+
+* `-m` (**modify**) : Used to add a new ACL rule or adjust an existing rule.
+* `-x` (**remove**) : Used to extract and delete a precise user or group rule.
+* `-b` (**remove-all**) : Completely deletes all extended rules, completely wiping custom ACL metadata.
+* `-k` (**remove-default**) : Isolates and deletes only the dynamic inheritance layer on directories.
+
+> 💡 **Pro Tip for Git/GitHub:** Standard Git repositories do not preserve Linux extended ACL metadata when files are committed. If your deployment environment requires these permissions, it is best practice to include a baseline shell script (e.g., `apply_acls.sh`) containing these commands within your repository to run during CI/CD pipelines or provisioning steps.
+
+---
+
+## 5. Auditing Mappings with `getfacl`
+
+To inspect active ACL mappings on any system object, use the `getfacl` command:
+
+```bash
+$ getfacl example_file.txt
+# file: example_file.txt
+# owner: root
+# group: root
+user::rw-
+user:lisa:rwx   # Extended ACL rule active
+group::r--
+mask::rwx
+other::r--
