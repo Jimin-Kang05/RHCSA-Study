@@ -1,0 +1,21 @@
+1. What is Flatpak?
+
+Flatpak is a next-generation utility for software deployment. It runs applications in
+an isolated Sandbox environment.
+
+Portability: Works across different Linux distributions.
+Security: Protects system via sandboxed isolation.
+Up-to-date: Access latest apps without dependency issues
+
+
+2. Key Commands
+
+[Action Command]
+
+Add Remote flatpak remote-add --if-not-exists flathub [URL]
+Search flatpak search [app-name]
+Install flatpak install [remote] [app-id]
+Run flatpak run [app-id]
+List flatpak list
+Update flatpak update
+Uninstall flatpak uninstall [app-id]
