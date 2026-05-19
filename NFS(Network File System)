@@ -1,0 +1,20 @@
+# NFS (Network File System) Guide
+
+NFS (Network File System) is a client/server-based file sharing protocol that allows a user on a client computer to access files over a network much like local storage. It is widely used for data sharing between servers in Linux/Unix environments.
+
+## 1. How NFS Works
+NFS mounts a directory from a remote host onto a local system's mount point. When a client accesses the mounted directory, the NFS client module forwards the request to the server over the network and retrieves the data transparently.
+
+---
+
+## 2. NFS Server Configuration (RHEL / CentOS)
+
+Steps to configure the **Server (Node2)** that hosts and shares the directory.
+
+### Step 1: Install Packages & Enable Service
+```bash
+# Install NFS utility packages
+sudo dnf install -y nfs-utils
+
+# Start and enable the NFS server service on boot
+sudo systemctl enable --now nfs-server
