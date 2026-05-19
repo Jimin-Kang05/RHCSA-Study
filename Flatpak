@@ -12,10 +12,10 @@ Up-to-date: Access latest apps without dependency issues
 
 [Action Command]
 
-Add Remote flatpak remote-add --if-not-exists flathub [URL]
-Search flatpak search [app-name]
-Install flatpak install [remote] [app-id]
-Run flatpak run [app-id]
-List flatpak list
-Update flatpak update
-Uninstall flatpak uninstall [app-id]
+Add Remote: flatpak remote-add --if-not-exists flathub [URL]
+Search: flatpak search [app-name]
+Install: flatpak install [remote] [app-id]
+Run: flatpak run [app-id]
+List: flatpak list
+Update: flatpak update
+Uninstall: flatpak uninstall [app-id]
