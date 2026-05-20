@@ -1,0 +1,27 @@
+# 📦 Samba Guide
+
+Samba is an open-source software suite that provides seamless file and print services to SMB/CIFS clients, allowing interoperability between Linux/Unix servers and Windows/macOS clients. This document covers core concepts, server/client configuration, and troubleshooting tips.
+
+---
+
+## 🚀 1. Introduction to Samba
+Samba utilizes the **SMB/CIFS (Server Message Block/Common Internet File System)** networking protocol. Since Windows operating systems inherently use SMB for network sharing, deploying Samba on a Linux server enables Windows clients to mount and access shared directories as network drives without installing any additional software.
+
+### Key Features
+- **Cross-Platform Support:** Seamless interoperability between Linux/Unix servers and Windows/macOS clients.
+- **Domain Controller Capabilities:** Acts as a Windows Active Directory (AD) Domain Controller or integrates seamlessly into an existing AD domain.
+- **Granular Access Control:** Combines Linux POSIX permissions with Samba's dedicated user database for secure, fine-grained access control.
+
+---
+
+## 🛠️ 2. Samba Server Configuration (RHEL / CentOS / Rocky Linux)
+
+### [Step 1] Install Packages & Prepare Directories
+Install the core Samba packages and create the directory intended for network sharing.
+```bash
+# Install packages
+sudo dnf install -y samba samba-common
+
+# Create share directory
+sudo mkdir -p /samba/share
+sudo chmod 777 /samba/share  # For testing (restrict permissions using groups in production)
