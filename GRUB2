@@ -1,0 +1,21 @@
+```markdown
+# [Linux] Deep Dive into GRUB2 Bootloader: Concepts and Configuration
+
+This document covers the essential concepts of **GRUB2 (Grand Unified Bootloader version 2)**, how to modify its configuration files, and the standard procedures for changing kernel parameters in Red Hat Enterprise Linux (RHEL).
+
+---
+
+## 1. What is GRUB2?
+
+**GRUB2** is the default **bootloader** used in modern Linux distributions. It is the first software program that runs when a computer starts up after the firmware (BIOS/UEFI) initialization. Its primary responsibility is to load the Linux Kernel into memory and transfer control to it.
+
+### 💡 Key Features
+- **Multi-boot Support:** Allows users to select between multiple Operating Systems or different kernel versions during boot.
+- **Modular Architecture:** Dynamically loads modules at boot time to support various file systems (e.g., ext4, xfs, btrfs).
+- **Security:** Supports password protection for boot menu entries to prevent unauthorized modification.
+
+---
+
+## 2. GRUB2 Configuration Architecture
+
+GRUB2 separates user-editable configuration files from the compiled file read by the system. **Never manually edit the generated `grub.cfg` file directly.**
