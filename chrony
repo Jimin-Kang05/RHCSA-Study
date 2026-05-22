@@ -1,0 +1,43 @@
+1. Overview of NTP and Chrony
+What is NTP (Network Time Protocol)?
+Definition: A networking protocol used to synchronize the system clocks of computers over a network to a standard reference time (typically UTC).
+
+Protocol & Port: It operates over UDP port 123 utilizing a master-slave hierarchical structure.
+
+Importance: Critical for log accuracy, transaction consistency, distributed database synchronization, and time-sensitive security protocols (like Kerberos and SSL/TLS).
+
+Stratum Levels (Hierarchy):
+
+Stratum 0: High-precision timekeeping devices such as atomic clocks or GPS receivers (not connected to the network).
+
+Stratum 1: Servers directly attached to a Stratum 0 device.
+
+Stratum 2: Servers that synchronize across the network with Stratum 1 servers (commonly public NTP pools).
+
+  What is Chrony?
+Definition: A versatile implementation of NTP, which replaces the legacy ntpd daemon as the default time-synchronization tool in RHEL 7+, CentOS 7+, and Ubuntu 18.04+.
+
+Key Advantages:
+
+Faster Synchronization: Synchronizes the system clock much quicker than the legacy ntpd when there is a significant initial time gap.
+
+Resilience to Poor Networks: Performs flawlessly on intermittent, highly congested, or bandwidth-constrained networks, making it ideal for virtual machines (VMs).
+
+Smooth Slewing: Adjusts the clock frequency smoothly (slew) instead of stepping it abruptly, avoiding unexpected application failures.
+
+  
+# 1. Specify upstream NTP servers for synchronization (iburst prompts fast sync on boot)
+server pool.ntp.org iburst
+server 192.168.56.11 iburst
+
+# 2. Allow the system clock to be stepped if the adjustment is larger than 1.0 second (only in the first 3 clock updates)
+makestep 1.0 3
+
+# 3. Enable real-time clock (RTC) synchronization with the system clock
+rtcsync
+
+# 4. (Optional) Allow specific IP subnets to use this server as an NTP server
+# allow 192.168.56.0/24
+
+# 5. Directory to store Chrony log files
+logdir /var/log/chrony
