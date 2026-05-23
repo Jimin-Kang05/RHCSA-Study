@@ -1,0 +1,43 @@
+```markdown
+# Guide to systemd Timers: Concepts and Configuration
+
+This document explains the concepts and configuration of **systemd timers**, which serve as a modern replacement for `cron` to automate and schedule tasks in Linux environments (RHEL, CentOS, and modern Linux distributions).
+
+---
+
+## 1. What is a systemd Timer?
+
+A systemd timer is a **task scheduler** that triggers system services, periodic scripts, or maintenance tasks based on specific time intervals or events.
+
+### Why choose systemd timers over cron?
+* **Centralized Logging**: All outputs and errors are integrated into `journalctl`, making debugging significantly easier.
+* **Missed Task Catch-up (Persistent)**: If a task was missed because the system was powered off, it can be executed immediately upon the next boot.
+* **Flexible Triggers**: Supports both calendar-based scheduling (Wall-clock) and event-based scheduling (e.g., X minutes after boot or after the service last activated).
+* **Resource Limitation**: Leverage `cgroups` to restrict CPU or memory usage for specific scheduled jobs.
+
+---
+
+## 2. How It Works (The Pair Structure)
+
+A systemd timer always operates as a **pair of unit files**. They must share the exact same base name.
+
+1. **`.service` file**: Defines **What** to execute (the actual commands or script paths).
+2. **`.timer` file**: Defines **When** to execute (the time expressions and intervals).
+
+---
+
+## 3. Step-by-Step Configuration
+
+> **Scenario**: Configure a task to run **every 2 minutes** with `lina` user privileges using the `logger` command.
+
+### Step 1: Create the Service Unit File
+Path: `/etc/systemd/system/lina-logger.service`
+
+```ini
+[Unit]
+Description=Lina User Logger Service
+
+[Service]
+Type=oneshot
+User=lina
+ExecStart=/usr/bin/logger "RHCSA EX200 Practice"
