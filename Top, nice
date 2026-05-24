@@ -1,0 +1,52 @@
+```markdown
+# [RHEL 10 / RHCSA v10] Linux Process Management: top Command & Nice Value Control
+
+This document provides a comprehensive guide to monitoring system performance and managing CPU process priorities using `top`, `nice`, and `renice` commands in Red Hat Enterprise Linux (RHEL) 10 environments.
+
+---
+
+## 1. Real-time Monitoring with `top`
+
+The `top` command is an interactive utility that displays real-time system metrics, including CPU/Memory usage and a list of running processes.
+
+### 📌 Key Columns to Monitor
+*   **PID**: Process ID (Unique identifier)
+*   **PR**: Priority (The actual priority managed by the Linux kernel; lower means higher priority)
+*   **NI**: Nice Value (The user-space priority adjustment value; **Crucial for RHCSA**)
+*   **%CPU / %MEM**: CPU and Memory consumption percentage
+
+### ⌨️ Useful Interactive Shortcuts (Inside top)
+*   `P`: Sort processes by CPU usage (Default)
+*   `M`: Sort processes by Memory usage
+*   `r`: Renice a process (Change the Nice value of a running process immediately)
+*   `k`: Kill a process (Send a signal to terminate a specific PID)
+*   `q`: Quit `top` and return to the terminal
+
+---
+
+## 2. Understanding Nice Values
+
+The Linux kernel utilizes the **Nice value** to schedule CPU resources. It literally determines how "nice" a process will be to other processes regarding CPU time.
+
+*   **Range**: `-20` (Highest priority) to `19` (Lowest priority)
+*   **Default Value**: `0`
+*   **Core Rule**: The **lower** the value (negative numbers), the **higher** the priority. The **higher** the value (positive numbers), the **lower** the priority.
+*   **Privileges**:
+    *   Regular users can only **increase** the nice value (lowering their own priority).
+    *   Only the **`root` administrator** can **decrease** the nice value (assigning negative numbers for higher priority).
+
+---
+
+## 3. Practical Command Cheatsheet
+
+### A. Starting a New Process with a Specific Nice Value (`nice`)
+Set the priority at the exact moment you initiate a command.
+```bash
+# Syntax
+nice -n [nice_value] [command]
+
+# Example 1: Run a backup task with low priority (10) to minimize system impact
+nice -n 10 dd if=/dev/zero of=/tmp/dummyfile bs=1M count=500 &
+
+# Example 2: Run a critical job with the highest priority (-20) (Requires root)
+sudo nice -n -20 make compile_job
