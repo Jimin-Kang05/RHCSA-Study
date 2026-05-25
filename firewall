@@ -1,0 +1,60 @@
+[Cheat-Sheet] RHEL firewalld: Core Concepts & Essential Commands
+
+A comprehensive guide to `firewalld` for Linux system administration and RHCSA (Red Hat Certified System Administrator) exam preparation. Optimized for GitHub repositories (TIL / Cheat-sheets).
+
+---
+
+## 1. What is firewalld?
+
+`firewalld` is the default dynamic firewall manager used in Red Hat Enterprise Linux (RHEL) and CentOS-based systems. It provides a more intuitive, structured, and command-driven interface to manage firewall rules without requiring administrators to interact directly with the underlying `nftables` (formerly `iptables`) backend.
+
+### 🔴 Key Features
+* **Dynamic Management:** Changes can be applied in real-time (`--reload`) without breaking existing network connections.
+* **Zone-Based Architecture:** Network traffic is separated into different zones based on the trust level (security tier) of the connection.
+* **Granular Control:** Allows fine-grained rule matching using predefined service names, port numbers, network interfaces, and source IP addresses.
+
+---
+
+## 2. Essential Commands Reference
+
+Top 10 essential commands most frequently used by system administrators in production environments and exams.
+
+| Action | Command |
+| :--- | :--- |
+| **Check Firewall Daemon Status** | `systemctl status firewalld` |
+| **Start and Enable Firewall Daemon** | `systemctl enable --now firewalld` |
+| **List All Currently Active Rules** | `firewall-cmd --list-all` |
+| **List Active Zones and Bindings** | `firewall-cmd --get-active-zones` |
+| **List All Predefined Services** | `firewall-cmd --get-services` |
+| **Allow a Service (Temporary)** | `firewall-cmd --add-service=http` |
+| **Allow a Port/Protocol (Permanent)** | `firewall-cmd --permanent --add-port=8080/tcp` |
+| **Remove a Service/Port Rule** | `firewall-cmd --permanent --remove-service=http` |
+| **Apply Permanent Rules Instantly** | `firewall-cmd --reload` |
+| **List Active Rich Rules Only** | `firewall-cmd --list-rich-rules` |
+
+---
+
+## 3. Core Options Guide
+
+Options appended to `firewall-cmd` determine the scope, visibility, and persistence of the firewall rules.
+
+* `--permanent`
+    * **Description:** Saves the rule persistently into configuration files. Without this option, rules are lost when the system reboots or the firewall service restarts. (Mandatory for the RHCSA exam)
+    * **Note:** Changes do not take effect immediately; you must execute `firewall-cmd --reload` afterward.
+* `--zone=<ZONE_NAME>`
+    * **Description:** Specifies the target zone for the rule. If omitted, the rule applies to the current default zone (usually `public`).
+* `--add-service=<SERVICE>` / `--remove-service=<SERVICE>`
+    * **Description:** Allows or blocks traffic for predefined services (e.g., `http`, `https`, `ssh`, `ftp`) mapping their default ports automatically.
+* `--add-port=<PORT/PROTOCOL>` / `--remove-port=<PORT/PROTOCOL>`
+    * **Description:** Controls traffic for custom ports not bound to predefined services. The port number must be explicitly paired with its protocol type (`tcp` or `udp`). (e.g., `3306/tcp`)
+* `--add-source=<IP/CIDR>`
+    * **Description:** Binds a specific source IP address or entire subnet network range to a designated zone.
+* `--add-interface=<INTERFACE_NAME>`
+    * **Description:** Assigns a physical or virtual network interface card (e.g., `eth0`, `ens160`) to a specific zone.
+
+---
+
+## 🚨 Production & Exam Checklist
+1.  **Persistence Verification:** If the requirement states that the firewall rule must persist across reboots, double-check that `--permanent` is explicitly included in your command.
+2.  **The Reload Step:** Remember that rules created with `--permanent` are idle until you run `firewall-cmd --reload` to load them into active memory.
+3.  **Validation is Key:** After applying any configuration, always execute `firewall-cmd --list-all` or `firewall-cmd --zone=<ZONE_NAME> --list-all` to visually confirm that your rules have been properly parsed and applied.
