@@ -1,0 +1,44 @@
+### 1. Introduction to Stratis
+**Stratis** is a local storage management system introduced by Red Hat (available from RHEL 8 onwards). It aims to simplify the configuration and management of complex storage stacks. 
+
+Instead of manually managing separate layers like Physical Volumes (PV), Volume Groups (VG), Logical Volumes (LV), and XFS file systems, Stratis integrates these into a **pool-based storage system**. It provides advanced corporate-level features via a straightforward Command-Line Interface (CLI).
+
+#### Key Features
+* **Thin Provisioning:** Allocates virtual storage space on-demand, consuming physical resources only when data is actually written.
+* **Dynamic Growth:** Automatically expands the file system size in the background as data grows, eliminating manual resizing commands.
+* **Snapshotting:** Creates point-in-time, space-efficient copies of file systems instantly for backups or testing.
+
+---
+
+### 2. Stratis Command Options
+The `stratis` command follows a hierarchical structure: `stratis [target] [action]`.
+
+#### ❶ Pool Management (`stratis pool`)
+Used to manage the underlying block device collections.
+
+| Command Option | Description | Example |
+| :--- | :--- | :--- |
+| `create` | Creates a new storage pool using empty block devices. | `stratis pool create my_pool /dev/sdb` |
+| `list` | Displays all existing Stratis pools and their usage. | `stratis pool list` |
+| `add-data` | Adds additional block devices to scale up an existing pool. | `stratis pool add-data my_pool /dev/sdc` |
+| `rename` | Renames an existing pool. | `stratis pool rename old_name new_name` |
+| `destroy` | Deletes a pool (Only works if all child filesystems are deleted). | `stratis pool destroy my_pool` |
+
+#### ❷ Filesystem Management (`stratis filesystem`)
+Used to manage actual mountable file systems inside a pool.
+
+| Command Option | Description | Example |
+| :--- | :--- | :--- |
+| `create` | Creates a thin-provisioned filesystem inside a pool. | `stratis filesystem create my_pool my_fs` |
+| `list` | Lists filesystems, including their unique device paths. | `stratis filesystem list` |
+| `snapshot` | Creates a read/writeable snapshot of a filesystem. | `stratis filesystem snapshot my_pool my_fs snap_my_fs` |
+| `destroy` | Permanently deletes a filesystem. | `stratis filesystem destroy my_pool my_fs` |
+
+---
+
+### 3. Persistent Mounting (`/etc/fstab`)
+Because Stratis is managed by a user-space daemon (`stratisd`), standard mounting during boot will fail unless instructed to wait for the daemon.
+
+1. **Find the UUID:**
+```bash
+   sudo blkid /dev/stratis/my_pool/my_fs
