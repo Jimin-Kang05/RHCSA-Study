@@ -1,0 +1,46 @@
+# Podman Core Guide: Concepts and Essential Command Cheat Sheet
+
+Podman (Pod Manager) is an open-source, OCI (Open Container Initiative) compliant container engine. Adopted as the default containerization tool in Red Hat Enterprise Linux (RHEL), it provides a drop-in replacement for Docker while delivering a more secure and lightweight architecture.
+
+---
+
+## 1. Key Features of Podman
+
+* **Daemonless:** Unlike Docker, Podman does not rely on a central background daemon (`dockerd`). Containers launch as standard child processes, reducing resource overhead and eliminating a Single Point of Failure (SPOF).
+* **Rootless:** A cornerstone for security. Standard, non-privileged users can seamlessly create, run, and manage containers without requiring `root` access, drastically minimizing the system's attack surface.
+* **Native Pod Support:** Similar to Kubernetes, Podman allows you to group multiple containers into a single "Pod," enabling them to share network namespaces and local storage volumes.
+
+---
+
+## 2. Essential Commands Reference
+
+Most core container mutations mirror standard docker CLI behaviors; simply replace `docker` with `podman`.
+
+| Command | Description | Example |
+| :--- | :--- | :--- |
+| `podman pull` | Download images from a remote registry | `podman pull nginx` |
+| `podman images` | List cached images on the local storage | `podman images` |
+| `podman run` | Provision and spin up a new container instance | `podman run -d --name web nginx` |
+| `podman ps` | List active containers (Use `-a` for all states) | `podman ps -a` |
+| `podman stop` | Gracefully halt a running container instance | `podman stop web` |
+| `podman rm` | Evict a container (`-f` forces removal) | `podman rm -f web` |
+| `podman rmi` | Permanently erase a local container image | `podman rmi nginx` |
+| `podman logs` | Fetch runtime stdout/stderr container logs | `podman logs web` |
+| `podman exec` | Execute an interactive process inside a container | `podman exec -it web bash` |
+
+---
+
+## 3. Crucial Runtime Options Cheat Sheet (`podman run`)
+
+These flags are frequently chained together when orchestrating baseline environments.
+
+* **`-d` (--detach):** Runs the container asynchronously in the background, freeing up your terminal prompt.
+* **`--name`:** Assigns a human-readable identifier alias to the container. If omitted, a generic string is randomly allocated.
+* **`-p` (--publish) `<host_port>:<container_port>`:** Sets up network port forwarding mappings.
+  * *Example:* `-p 8080:80` (Routes host port 8080 requests down to container port 80)
+* **`-v` (--volume) `<host_path>:<container_path>[:flag]`:** Mounts shared filesystems between host nodes and container layers.
+  * **🚨 RHEL/SELinux Pro-Tip:** Under rootless configurations, always append the **`:Z`** flag prefix. This dynamically updates SELinux contexts, averting silent `Permission Denied` faults.
+  * *Example:* `-v /srv/data:/var/www/html:Z`
+* **`-e` (--env):** Injects operational environment variables into the isolation layer scope.
+  * *Example:* `-e MYSQL_ROOT_PASSWORD=secret`
+* **`--rm`:** Automatically purges the container filesystem metadata immediately upon exit state. Highly practical for temporary testing jobs.
