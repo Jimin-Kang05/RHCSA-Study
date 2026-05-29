@@ -1,0 +1,104 @@
+# SELinux (Security-Enhanced Linux) Guide & Key Commands
+
+## 1. Overview of SELinux
+**SELinux (Security-Enhanced Linux)** is a security module for the Linux kernel that provides a mechanism for supporting **Mandatory Access Control (MAC)**. It allows system administrators to have granular control over process permissions.
+
+Traditional Linux uses **Discretionary Access Control (DAC)**, where the owner of a file can change its permissions at will. This poses a high risk if the `root` account is compromised. SELinux mitigates this by enforcing strict security Policies that restrict even the root user from performing unauthorized actions.
+
+### Core Concepts
+* **Subject:** A process (e.g., Apache, Nginx, SSHD).
+* **Object:** A system resource (e.g., files, directories, ports).
+* **Security Context:** A label assigned to subjects and objects to determine access permissions. It follows the format `user:role:type:level`, where the **Type** is the most critical component.
+
+---
+
+## 2. SELinux Modes
+SELinux operates in one of three modes:
+
+| Mode | Description |
+| :--- | :--- |
+| **Enforcing** | The default mode. SELinux policies are enforced. Unauthorized access is **blocked and logged**. |
+| **Permissive** | SELinux policies are not enforced. Unauthorized actions are **allowed but logged** with warnings. (Useful for debugging) |
+| **Disabled** | SELinux is completely **turned off**. (Requires a system reboot to apply) |
+
+---
+
+## 3. Key SELinux Commands
+
+### 3.1 Checking Status and Changing Modes
+Commands to check the current SELinux status and temporarily switch modes.
+
+* **Check detailed status**
+```bash
+    sestatus
+    ```
+* **Check the current operating mode only**
+```bash
+    getenforce
+    ```
+* **Temporarily change the operating mode** (Resets after reboot)
+```bash
+    setenforce 1  # Switch to Enforcing mode
+    setenforce 0  # Switch to Permissive mode
+    ```
+
+> ⚠️ **Persistent Change:** To make changes permanent across reboots, edit the `/etc/selinux/config` file and set `SELINUX=enforcing` or `SELINUX=permissive`.
+
+### 3.2 Viewing Security Contexts (Labels)
+To view SELinux labels for files, directories, or processes, append the `-Z` option to standard Linux commands.
+
+* **View file/directory context**
+```bash
+    ls -Z /var/www/html/index.html
+    ```
+* **View running process context**
+```bash
+    ps -efZ | grep nginx
+    ```
+* **View current logged-in user context**
+```bash
+    id -Z
+    ```
+
+### 3.3 Modifying and Restoring Security Contexts
+When files are moved or copied, incorrect SELinux types can trigger `403 Forbidden` errors on web servers. Use these commands to fix label mismatches.
+
+* **Temporarily change context (`chcon`)**
+```bash
+    chcon -t httpd_sys_content_t /var/www/html/custom.html
+    ```
+* **Permanently register context policy (`semanage fcontext`)**
+```bash
+    semanage fcontext -a -t httpd_sys_content_t "/data/website(/.*)?"
+    ```
+* **Restore context to the defined policy (`restorecon`)**
+```bash
+    restorecon -vR /var/www/html/
+    ```
+
+### 3.4 Managing SELinux Booleans
+Booleans allow you to turn pre-defined security policies on or off without rewriting the policy files.
+
+* **List all booleans and their current states**
+```bash
+    getsebool -a
+    # Or search for a specific keyword
+    getsebool -a | grep httpd
+    ```
+* **Change a boolean value (`setsebool`)**
+```bash
+    # Allow the web server to make outbound network connections (Temporary)
+    setsebool httpd_can_network_connect on
+
+    # Use the -P option to make it persistent across reboots
+    setsebool -P httpd_can_network_connect on
+    ```
+
+### 3.5 Troubleshooting and Logs
+SELinux denial logs are primarily stored in `/var/log/audit/audit.log` or `/var/log/messages`.
+
+* **Analyze denial logs in a human-readable format** (Requires `setroubleshoot` package)
+```bash
+    sealert -a /var/log/audit/audit.log
+    ```
+    *This command analyzes why an action was blocked and suggests the exact command to resolve the issue.*
