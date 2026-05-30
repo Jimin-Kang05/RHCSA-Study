@@ -1,0 +1,40 @@
+# Tuned: Linux System Performance Optimization Daemon
+
+`tuned` is a **systemd service (daemon)** that runs in the background to automatically optimize Linux system performance. Instead of requiring users to manually modify kernel parameters or power management settings, it dynamically tunes the system using pre-defined profiles tailored to various workloads.
+
+---
+
+## 1. Core Concepts & Mechanism
+
+* **Daemon-Based Operation**: System settings are dynamically applied as soon as the `tuned` service starts or when a user selects a new profile.
+* **Profile-Based Optimization**: It provides pre-configured settings tailored for environments such as servers, desktops, low-power systems, and virtualized infrastructures.
+* **Dynamic Tuning**: Monitors system activity and continuously adjusts kernel parameters and power management configurations in real-time (e.g., when high storage read/write or massive network transfers are detected).
+
+---
+
+## 2. Major Tuned Profiles
+
+Running the `tuned-adm list` command displays the profiles available on your system.
+
+| Profile Name | Purpose & Key Features |
+| :--- | :--- |
+| **`balanced`** | Default profile providing a balance between performance and power saving. |
+| **`desktop`** | Derived from `balanced`; optimizes responsiveness for interactive applications. |
+| **`powersave`** | Minimizes performance to maximize power savings (ideal for laptop battery mode). |
+| **`throughput-performance`** | Maximizes data throughput; recommended for heavy computational workloads and standard servers. |
+| **`latency-performance`** | Minimizes latency at the expense of higher power consumption to ensure rapid response times. |
+| **`network-latency`** | Derived from `latency-performance`; maximizes network interface card (NIC) responsiveness. |
+| **`network-throughput`** | Optimizes high-volume network traffic and bulk data transmission efficiency. |
+| **`virtual-guest`** | Optimizes guest OS performance when running inside a Virtual Machine (VM). |
+| **`virtual-host`** | Optimizes physical host server performance when hosting multiple VMs (e.g., KVM). |
+
+---
+
+## 3. Essential Management Commands (`tuned-adm`)
+
+Administrative privileges (`sudo`) are strictly required to control `tuned` and switch profiles.
+
+### ① Service Status & Management
+* **Enable and start Tuned service immediately**
+  ```bash
+  sudo systemctl enable --now tuned
