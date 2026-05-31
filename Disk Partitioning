@@ -1,0 +1,41 @@
+```markdown
+# [Cheat-Sheet] Linux Disk Partitioning Guide
+
+This guide covers the core concepts and practical workflows for disk partitioning in a Red Hat Enterprise Linux (RHEL) environment.
+
+---
+
+## 1. Partition Table Partitioning Checklist
+
+Before modifying a disk, choose the appropriate partition table scheme based on disk size and architecture.
+
+* **MBR (dos):** 
+  * Supports disk sizes up to **2TB**.
+  * Allows a maximum of 4 Primary partitions (Requires Extended/Logical partitions for more).
+* **GPT:** 
+  * Required for large disks over **2TB**.
+  * No practical partition limit (Up to 128 primary partitions by default).
+  * Standard specification for UEFI booting systems.
+
+---
+
+## 2. Core Partitioning Tools
+
+* `fdisk`: An interactive, text-based utility primarily used for managing MBR (dos) partition tables.
+* `gdisk`: An interactive utility dedicated to GPT partition tables (commands are identical to fdisk).
+* `parted`: Supports both MBR and GPT. Excellent for automation scripts as it can create partitions in a single command line.
+
+---
+
+## 3. Practical 4-Step Partitioning Process (XFS Filesystem)
+
+The standard workflow when a new disk storage device (e.g., `/dev/sdb`) is attached to the system.
+
+### Step 1: Create a Partition
+Use the `parted` command to apply a GPT label to the disk and allocate a 2GiB partition.
+```bash
+# Initialize the disk partition table type as GPT
+sudo parted /dev/sdb mklabel gpt
+
+# Create a primary partition from 1MiB to 2GiB with XFS alignment
+sudo parted /dev/sdb mkpart primary xfs 1MiB 2GiB
